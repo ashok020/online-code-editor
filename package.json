@@ -1,0 +1,26 @@
+{
+  "name": "online-code-editor",
+  "version": "1.0.0",
+  "description": "Fully Functional code editor",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashok020/online-code-editor.git"
+  },
+  "author": "ashok",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashok020/online-code-editor/issues"
+  },
+  "homepage": "https://github.com/ashok020/online-code-editor#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
