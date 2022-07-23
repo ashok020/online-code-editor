@@ -1,4 +1,4 @@
 # online-code-editor
-Simple code editor with autocomplete
-
-Will be adding run code feature soon
+Fully Function code editor with compilation and run.
+Autocomplete suggestion based on local code variables.
+Added more themes.
