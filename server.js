@@ -1,76 +1,66 @@
 const express = require('express');
-const fs = require('fs/promises');
-const path = require('path');
-const exec  = require('child_process').exec;
-const app = express()
-const port = 3000;
-let max_time = 2000;
-var lang_map = {
-  c :{file_name : 'run.c',needBuild : true,build_cmd : 'gcc run.c -o run_c',run_cmd : 'run_c'},
-  cpp : {file_name : 'run.cpp',needBuild : true,build_cmd : 'g++ run.cpp -o run',run_cmd : 'run'},
-  py: {file_name : 'run.py',needBuild : false,run_cmd : 'python run.py'},
-  js : {file_name : 'run.js',needBuild : false,run_cmd : 'node run.js'}};
+const app = express();
+const mongoose = require("mongoose");
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+const loginRouter = require("./routes/login");
+const signupRouter = require("./routes/signup");
+const homeRouter = require("./routes/home");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
+const bodyParser = require('body-parser');
+const users = require("./models/users");
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + "/views/index.html");
-})
+const url = "mongodb+srv://ashok:ashok20032001@cluster0.zmvrzcr.mongodb.net/code_editor?retryWrites=true";
+const dbName = "code_editor";
+// const dbUrl = url + dbName;
+const port = process.env.PORT || 8080;
+const expire_duration = 7 * 60 * 60 * 1000;
 
-app.post('/run',async(req,res)=>{
-    console.log(req.body);
-    await runFile(req.body.code,req.body.input,req.body.lang,res,showOutput);
-})
+main().catch((err) => console.log(err));
 
-app.listen(port, () => {
-  console.log(`listening on port ${port}`)
-})
-
-async function saveFile(content,filename)
+async function main()
 {
-    await fs.writeFile(filename, content, err => {
-        if (err) {
-            console.error(err);
-          return;
-        }
-      });
-}
+  app.listen(port, (err) => {
+    if (err) throw err;
+    console.log("Listening on " + port);
+  });
 
-async function runFile(code,input,lang,res,cb)
-{
-  let file_name = lang_map[lang].file_name;
-  let needBuild = lang_map[lang].needBuild;
-  let run_cmd = lang_map[lang].run_cmd;
-  await saveFile(code,file_name);
-  if(needBuild)
-  {
-      exec(lang_map[lang].build_cmd,(err)=>{
-        if(err) return cb(res,err.message);
-        else
-        {
-          var run = exec(run_cmd,{timeout:max_time},(err)=>{if(err) return cb(res,err.message);});
-          run.stdin.setEncoding('utf-8');
-          run.stdin.write(input);
-          run.stdout.on('data',data => {return cb(res,data)});
-          run.stderr.on('data',data => {return cb(res,data)});
-          run.stdin.end();
-        }
-      });
-  }
-  else
-  {
-      var run = exec(run_cmd,{timeout:max_time},(err)=>{if(err) return cb(res,err.message);});
-      run.stdin.setEncoding('utf-8');
-      run.stdin.write(input);
-      run.stdout.on('data',data => {return cb(res,data)});
-      run.stderr.on('data',data => {return cb(res,data)});
-      run.stdin.end();
-  }
-}
+  var store = new MongoDBStore({
+    uri: url,
+    collection: "mySessions",
+  });
 
-async function showOutput(res,output)
-{
-  console.log(output);
-  res.end(JSON.stringify({output : output}));
+  store.on("error", function (error) {
+    console.log(error);
+  });
+
+  app.use(
+    session({
+      secret: "secert/key for signing cookie",
+      resave: false,
+      saveUninitialized: false,
+      cookie: { maxAge: expire_duration },
+      store: store,
+    })
+  );
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: false}));
+
+  app.use(express.static(__dirname + "/public"));
+  app.set("view engine", "ejs");
+  app.use("/login", loginRouter);
+  app.use("/signup", signupRouter);
+  app.use("/home", homeRouter);
+  //root
+  app.get("/", (req, res) => {
+    res.redirect('/home');
+  });
+
+  mongoose.connect(url);
+  const con = mongoose.connection;
+  con.on("error", (err) => {
+    throw err;
+  });
+  con.once("open", () => console.log("Connected to " + dbName));
 }
