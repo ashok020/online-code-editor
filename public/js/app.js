@@ -11,7 +11,7 @@ var editor = ace.edit("editor");
 var tcEditor = ace.edit("tc-editor");
 var opEditor = ace.edit("op-editor");
 
-var themeName = "dracula";
+var themeName = "ambiance";
 
 var lang_saved_code = {
 "cpp" : `#include<bits/stdc++.h>
@@ -53,7 +53,6 @@ editor.setAutoScrollEditorIntoView(true);
 editor.setTheme("ace/theme/".concat(themeName));
 editor.setShowPrintMargin(false);
 editor.session.setMode("ace/mode/c_cpp");
-editor.clearSelection();
 editor.setFontSize(16);
 editor.session.setTabSize(4); 
 editor.setOptions({
@@ -63,6 +62,10 @@ editor.setOptions({
     useSoftTabs: true
 });
 
+window.addEventListener('load', () => {
+    beautify.beautify(editor.session)
+  })
+
 function showCode(code,lang)
 {
     document.getElementById("lang").value = lang;
@@ -70,7 +73,7 @@ function showCode(code,lang)
     changeLang();
 }
 
-function changeLang() {
+async function changeLang() {
    	var x = document.getElementById("lang");
     var lang = x.options[x.selectedIndex].value;
     var mode;
@@ -79,9 +82,13 @@ function changeLang() {
     else if(lang=="py") mode = "python";
     else if(lang=="js") mode = "javascript";
     editor.session.setMode("ace/mode/".concat(mode));
-    editor.setValue(lang_saved_code[lang],1);
+
     beautify.beautify(editor.session);
     editor.clearSelection();
+
+    editor.setValue(lang_saved_code[lang],1);
+    editor.clearSelection();
+    beautify.beautify(editor.session);
     document.getElementById('file-lang').textContent = lang;
 }
 

@@ -138,7 +138,7 @@ a:hover
     position: relative;
     margin: 0;
     width: 99%;
-    height: 70vh;
+    height: 75vh;
     margin-top: 5px;
     font-family: monospace;
     font-variant-ligatures: no-common-ligatures;
@@ -152,7 +152,7 @@ a:hover
     font-variant-ligatures: no-common-ligatures;
     display: none;
     overflow: hidden;
-    width: 90vw;
+    width: 50vw;
     transform: translateX(15px);
     position: absolute;
 }
