@@ -8,8 +8,8 @@ const exec  = require('child_process').exec;
 
 let max_time = 2000;
 var lang_map = {
-  c :{file_name : 'run.c',needBuild : true,build_cmd : 'gcc run.c -o run_c',run_cmd : 'run_c'},
-  cpp : {file_name : 'run.cpp',needBuild : true,build_cmd : 'g++ run.cpp -o run',run_cmd : 'run'},
+  c :{file_name : 'run.c',needBuild : true,build_cmd : 'gcc run.c -o run_c',run_cmd : './run_c'},
+  cpp : {file_name : 'run.cpp',needBuild : true,build_cmd : 'g++ run.cpp -o run',run_cmd : './run'},
   py: {file_name : 'run.py',needBuild : false,run_cmd : 'python run.py'},
   js : {file_name : 'run.js',needBuild : false,run_cmd : 'node run.js'}};
 
