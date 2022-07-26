@@ -3,7 +3,7 @@
 
 Web based Fully featured IDE and Code Saving Platform.
 
-# Hosted Link : https://codelive-ide.herokuapp.com/
+# Hosted Link : https://codelive.onrender.com/
 
 ## Features
 - Signup and Login to store progress
