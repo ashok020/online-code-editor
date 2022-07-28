@@ -5,6 +5,14 @@ Web based Fully featured IDE and Code Saving Platform.
 
 # Hosted Link : https://codelive.onrender.com/
 
+### Tech Stack used :
+    HTML
+    CSS
+    Javascript
+    Nodejs
+    MongoDB
+    ACE.js
+
 ## Features
 - Signup and Login to store progress
 - Store code files and retrive them from homepage
